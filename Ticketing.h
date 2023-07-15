@@ -7,20 +7,25 @@
 using namespace std;
 
 class Ticketing {
-	int genId = 1000; // +
-	list<Movie> movieList; // +
+	int genId = 1000;
+	list<Movie> movieList;
 public:
 	Ticketing();
 	~Ticketing();
-	int generateId(); // 
-	void showMenu(); //
-	void showAdminMenu(); //
-	void showTitle(); //
-	int inputMenu(); // 메뉴 입력 +
-	void searchMovie(); //영화 검색 +
-	void deleteMovie(); // 영화 삭제 +
-	void changeAdmin(); // 관리자 모드 +
-	void addMovie(); // 영화 추가 +
+	int generateId();
+	void showMenu();
+	void showAdminMenu();
+	void showTitle();
+	int inputMenu();
+	void searchMovie();
+	void reserveMovie();
+	void reserveCheck(int);
+	bool checkMovie(int);
+	void reserveCancel();
+	void deleteMovie();
+	void changeAdmin();
+	void initMenu();
+	void addMovie();
 };
 
 #endif

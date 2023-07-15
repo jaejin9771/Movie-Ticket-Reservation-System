@@ -67,6 +67,131 @@ void Ticketing::searchMovie() {
 	}
 	cout << "-------------------------------------------------\n";
 }
+bool Ticketing::checkMovie(int id) {
+	list<Movie>::iterator it;
+	for (it = movieList.begin(); it != movieList.end(); it++) {
+		if (it->getId() == id) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Ticketing::reserveMovie() {
+	int tempId;
+	int row, col;
+	list<Movie>::iterator it;
+
+	cout << "==== 영화예약\n";
+	searchMovie();
+	cout << "예약 할 영화 고유번호 : "; // 예약 할 번호가 없으면 다시 입력 부탁
+	cin >> tempId;
+	checkMovie(tempId);
+	cout << "좌석번호(행^열) >> ";
+	cin >> row >> col;
+
+	for (it = movieList.begin(); it != movieList.end(); ++it) {
+		if (it->getId() == tempId) {
+			Theater* theater = it->getTheater();
+
+			if (theater->getSeat(row, col) == 1) {
+				cout << "이미 예약된 좌석입니다.\n";
+				goto EXIT;
+			}
+
+			theater->setSeat(1, row, col);
+
+			cout << "예약되었습니다.\n";
+			break;
+		}
+	}
+EXIT: NULL;
+}
+
+void Ticketing::initMenu() {
+	showTitle();
+	while (true) {
+		showMenu();
+
+		int menuNum = inputMenu();
+		switch (menuNum) {
+		case SEARCH:
+			searchMovie();
+			break;
+		case RESERVATION:
+			reserveMovie();
+			break;
+		case RESERVATION_CHECK:
+			reserveCheck(-1);
+			break;
+		case RESERVATION_CANCEL:
+			reserveCancel();
+			break;
+		case ADMIN:
+			changeAdmin();
+			break;
+		case EXIT:
+			exit(0);
+			break;
+		}
+	}
+}
+
+void Ticketing::reserveCancel() {
+	int tempId;
+	int row, col;
+	cout << "==== 예약취소\n";
+
+	cout << "예약취소 할 영화 고유번호 : ";
+	cin >> tempId;
+	checkMovie(tempId);
+	reserveCheck(tempId);
+	cout << "좌석 선택(행^열) : ";
+	cin >> row >> col;
+
+	list<Movie>::iterator it;
+	for (it = movieList.begin(); it != movieList.end(); ++it) {
+		if (it->getId() == tempId) {
+			Theater* theater = it->getTheater();
+
+			if (theater->getSeat(row, col) == -1) {
+				cout << "예약되지 않은 좌석은 취소할 수 없습니다.\n";
+				goto EXIT;
+			}
+
+			theater->setSeat(-1, row, col);
+			cout << "예약 취소 되었습니다.\n";
+			break;
+		}
+	}
+EXIT: NULL;
+}
+
+void Ticketing::reserveCheck(int _tempId) {
+	int tempId;
+	cout << "==== 예약조회\n";
+	searchMovie();
+	if (movieList.size() == 0) {
+		cout << "예약 가능한 영화가 없습니다.\n";
+		return;
+	}
+	if (_tempId == -1) {
+		cout << "예약조회 할 영화 고유번호 : ";
+		cin >> tempId;
+	}
+	else {
+		tempId = _tempId;
+	}
+
+	list<Movie>::iterator it;
+	for (it = movieList.begin(); it != movieList.end(); ++it) {
+		if (it->getId() == tempId) {
+			Theater* theater = it->getTheater();
+			theater->printSeat();
+			break;
+		}
+	}
+}
 
 void Ticketing::deleteMovie() {
 	int tempId;
